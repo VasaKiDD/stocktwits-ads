@@ -10,7 +10,7 @@ def extract_twits(symbol, n_pages, last_id=None, sleep_scale=1.0):
     url = "https://api.stocktwits.com/api/2/streams/symbol/{symbol}.json?max="
     url = url.format(symbol=symbol)
     if last_id == None:
-        last_id = "1000000000"
+        last_id = "10000000000"
     data = []
     for _ in tqdm(range(n_pages)):
         data.extend(requests.get(url + last_id).json()["messages"])
@@ -55,12 +55,15 @@ def push_data_and_verify(
     client = MongoClient(url)
     db = client[db_name]
     collection = db[collection_name]
-    for twit in data:
+    for twit in tqdm(data):
         if not first:
             exist = collection.find_one({"id": twit["id"]})
-            if not exist:
+            if exist is None:
                 collection.insert_one(twit)
                 if not full_verif:
                     break
         else:
-            collection.insert_one(twit)
+            try:
+                collection.insert_one(twit)
+            except:
+                import pdb; pdb.set_trace()
