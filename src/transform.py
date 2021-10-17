@@ -2,15 +2,19 @@ import datetime
 from pymongo import MongoClient
 import pandas as pd
 from src.extract_yahoo import extract_yahoo
-
+from tqdm import tqdm
 
 def put_prices_in_twits(symbol, twits, prices):
     key_ = symbol + "_price"
-    for twit in twits:
+    for twit in tqdm(twits):
         twit_date = twit["date"].date()
-        superior = prices.truncate(before=twit_date)
-        closest = superior.iloc[0]
-        closest_p_1 = superior.iloc[1]
+        try:
+            superior = prices.truncate(before=twit_date)
+            closest = superior.iloc[0]
+            closest_p_1 = superior.iloc[1]
+        except IndexError:
+            twit[key_] = pd.NA
+            continue
         if closest.name.date() == twit_date:
             if twit["date"].hour == 14:
                 if twit["date"].minute > 30:
