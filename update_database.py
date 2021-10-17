@@ -1,6 +1,6 @@
 import argparse
 from pymongo import MongoClient
-import src.etl_stocktwits as etl1
+import src.extract_stocktwits as etl1
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -48,6 +48,9 @@ if __name__ == "__main__":
         )
         twits = etl1.transform_data(data)
         etl1.push_data_and_verify(
-            twits, uri, "stocktwits", "boeing", full_verif=False,
-            first=True
+            twits, uri, "stocktwits", "boeing", full_verif=False, first=True
         )
+
+    from src.transform import create_data_with_prices
+
+    create_data_with_prices("2020-01-01", "BA", uri, "stocktwits", "boeing")
