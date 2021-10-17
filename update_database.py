@@ -42,12 +42,12 @@ if __name__ == "__main__":
             twits, uri, "stocktwits", "boeing", full_verif=True, first=False
         )
 
-        if args.newest:
-            data = etl1.extract_twits(
-                "BA", args.pages, last_id=None, sleep_scale=1.0
-            )
-            twits = etl1.transform_data(data)
-            etl1.push_data_and_verify(
-                twits, uri, "stocktwits", "boeing", full_verif=False,
-                first=True
-            )
+    if args.newest:
+        data = etl1.extract_twits(
+            "BA", args.pages, last_id=None, sleep_scale=1.0
+        )
+        twits = etl1.transform_data(data)
+        etl1.push_data_and_verify(
+            twits, uri, "stocktwits", "boeing", full_verif=False,
+            first=True
+        )
