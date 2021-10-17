@@ -63,9 +63,4 @@ def push_data_and_verify(
                 if not full_verif:
                     break
         else:
-            try:
-                collection.insert_one(twit)
-            except:
-                import pdb
-
-                pdb.set_trace()
+            collection.insert_one(twit)

@@ -1,6 +1,6 @@
 import argparse
 from pymongo import MongoClient
-import src.etl_stocktwits as etl1
+import src.extract_stocktwits as etl1
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -9,9 +9,11 @@ if __name__ == "__main__":
 
     parser.add_argument("--oldest", action="store_true")
 
+    parser.add_argument("--newest", action="store_true")
+
     parser.add_argument("--first", action="store_true")
 
-    parser.add_argument("--pages", type=int, default=1)
+    parser.add_argument("--pages", type=int, default=10)
 
     args = parser.parse_args()
 
@@ -38,4 +40,13 @@ if __name__ == "__main__":
         twits = etl1.transform_data(data)
         etl1.push_data_and_verify(
             twits, uri, "stocktwits", "boeing", full_verif=True, first=False
+        )
+
+    if args.newest:
+        data = etl1.extract_twits(
+            "BA", args.pages, last_id=None, sleep_scale=1.0
+        )
+        twits = etl1.transform_data(data)
+        etl1.push_data_and_verify(
+            twits, uri, "stocktwits", "boeing", full_verif=False, first=True
         )
