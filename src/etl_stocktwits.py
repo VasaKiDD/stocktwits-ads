@@ -66,4 +66,6 @@ def push_data_and_verify(
             try:
                 collection.insert_one(twit)
             except:
-                import pdb; pdb.set_trace()
+                import pdb
+
+                pdb.set_trace()
