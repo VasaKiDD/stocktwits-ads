@@ -8,11 +8,22 @@ def put_prices_in_twits(symbol, twits, prices):
     key_ = symbol + "_price"
     for twit in twits:
         twit_date = twit["date"].date()
-        closest = prices.truncate(before=twit_date).iloc[0]
-        closest_date = closest.name.date()
-        if closest_date == twit_date:
-            twit[key_] = closest["Close"]
-        elif closest_date > twit_date:
+        superior = prices.truncate(before=twit_date)
+        closest = superior.iloc[0]
+        closest_p_1 = superior.iloc[1]
+        if closest.name.date() == twit_date:
+            if twit["date"].hour == 14:
+                if twit["date"].minute > 30:
+                    twit[key_] = closest["Close"]
+                else:
+                    twit[key_] = closest["Open"]
+            elif 15 <= twit["date"].hour <= 20:
+                twit[key_] = closest["Close"]
+            elif twit["date"].hour >= 21:
+                twit[key_] = closest_p_1["Open"]
+            else:
+                twit[key_] = closest["Open"]
+        elif closest.name.date() > twit_date:
             twit[key_] = closest["Open"]
         else:
             import pdb

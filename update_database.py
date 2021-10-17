@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--first", action="store_true")
 
-    parser.add_argument("--pages", type=int, default=1)
+    parser.add_argument("--pages", type=int, default=10)
 
     args = parser.parse_args()
 
@@ -50,7 +50,3 @@ if __name__ == "__main__":
         etl1.push_data_and_verify(
             twits, uri, "stocktwits", "boeing", full_verif=False, first=True
         )
-
-    from src.transform import create_data_with_prices
-
-    create_data_with_prices("2020-01-01", "BA", uri, "stocktwits", "boeing")
