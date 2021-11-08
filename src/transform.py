@@ -3,32 +3,35 @@ from pymongo import MongoClient
 import pandas as pd
 from src.extract_yahoo import extract_yahoo
 from tqdm import tqdm
+import numpy as np
+
 
 def put_prices_in_twits(symbol, twits, prices):
     key_ = symbol + "_price"
     for twit in tqdm(twits):
         twit_date = twit["date"].date()
         try:
-            superior = prices.truncate(before=twit_date)
-            closest = superior.iloc[0]
-            closest_p_1 = superior.iloc[1]
+            superior = prices.truncate(before=twit_date - pd.Timedelta(days=1))
+            closest_m_1 = superior.iloc[0]
+            closest = superior.iloc[1]
+            closest_p_1 = superior.iloc[2]
         except IndexError:
             twit[key_] = pd.NA
             continue
         if closest.name.date() == twit_date:
             if twit["date"].hour == 14:
                 if twit["date"].minute > 30:
-                    twit[key_] = closest["Close"]
+                    twit[key_] = np.log((closest["Close"] / closest["Open"]))
                 else:
-                    twit[key_] = closest["Open"]
+                    twit[key_] = np.log(closest["Open"] / closest_m_1["Close"])
             elif 15 <= twit["date"].hour <= 20:
-                twit[key_] = closest["Close"]
+                twit[key_] = np.log((closest["Close"] / closest["Open"]))
             elif twit["date"].hour >= 21:
-                twit[key_] = closest_p_1["Open"]
+                twit[key_] = np.log(closest_p_1["Open"] / closest["Close"])
             else:
-                twit[key_] = closest["Open"]
+                twit[key_] = np.log(closest["Open"] / closest_m_1["Close"])
         elif closest.name.date() > twit_date:
-            twit[key_] = closest["Open"]
+            twit[key_] = np.log(closest["Open"] / closest_m_1["Close"])
         else:
             import pdb
 
