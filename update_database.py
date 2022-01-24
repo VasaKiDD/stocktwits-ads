@@ -17,8 +17,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    uri = "mongodb+srv://quantboss:ftd2021@flash.4rznu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-    # uri = "mongodb+srv://quantboss:ftd2021@flash.4rznu.mongodb.net/"
+    uri = "mongodb+srv://<usr>.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    # uri = "mongodb+srv://<usr>.mongodb.net/"
 
     if args.first:
         data = etl1.extract_twits(
